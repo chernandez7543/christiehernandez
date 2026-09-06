@@ -1,0 +1,192 @@
+
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+using namespace std;
+
+std::pair<int, int> twoSumBruteForce(const std::vector<int>& nums, int target) {
+
+    for (int i = 0; i < nums.size(); ++i) {
+        for (int j = i + 1; j < nums.size(); ++j) {
+            if (nums[i] + nums[j] == target) {
+                return {i, j};
+            }
+        }
+    }
+    return {-1, -1};
+}
+
+;
+
+// Complexity
+// Brute Force:
+// Time complexity:O(n^2) due to nested loops that compare the pairs 
+// Space Complexity:O(1) due to no extra space used
+
+// Hash:
+// Time complexity: O(n) due to single loop
+// Space complexity: O(n) due to using more memory as more numbers are being added
+
+std::pair<int, int> twoSumHash(const std::vector<int>& nums, int target)
+{
+    std::unordered_map<int, int> mp;
+    for (int i = 0; i < nums.size(); ++i) {
+        int complement = target - nums[i];
+        if (mp.count(complement)) {
+
+            return {mp[complement], i};
+        }
+        mp[nums[i]] = i;
+    }
+    return {-1, -1};
+}
+;
+
+int main() {
+    
+    cout << boolalpha;
+
+    vector<int> nums = {15, 4, 18, 8, 19, 22, 24, 59, 59, 20, 18, 12, 36, 42, 9};
+    int target = 24;
+
+    pair<int, int> bruteResult = twoSumBruteForce(nums, target);
+    pair<int, int> hashResult = twoSumHash(nums, target);
+
+    bool bruteValid =
+        nums[bruteResult.first] + nums[bruteResult.second] == target;
+
+    bool hashValid =
+        nums[hashResult.first] + nums[hashResult.second] == target;
+
+    cout << "Brute Force Results: " << endl;
+    cout << "Indices: " << bruteResult.first << ", " << bruteResult.second << endl;
+    cout << "Values: " << nums[bruteResult.first] << ", "
+        << nums[bruteResult.second] << endl;
+
+    cout << "Valid: " << bruteValid << endl;
+
+    
+    cout << "Hash Results:" << endl;
+    cout << "Indices: " << hashResult.first << ", " <<hashResult.second << endl;
+    cout << "Values: " << nums[hashResult.first] << ", "
+        << nums[hashResult.second] << endl;
+    
+    cout << "Valid: " << hashValid << endl;
+
+    // Test case 2
+cout << endl;
+
+cout << "Test Case 2" << endl;
+
+vector<int> nums2 = {6, 4, 5, 2, 0, 8, 6, 16};
+int target2 = 12;
+
+pair <int, int> bruteResult2 = twoSumBruteForce(nums2, target2);
+pair <int, int> hashResult2 = twoSumHash(nums2, target2);
+
+bool bruteValid2 =
+    nums2[bruteResult2.first] + nums2[bruteResult2.second] == target2;
+
+bool hashValid2 =
+    nums2[hashResult2.first] + nums2[hashResult2.second] == target2;
+
+    cout << "Brute Force Results:" << endl;
+    cout << "Indices: " <<bruteResult2.first << ", " << bruteResult2.second << endl;
+    cout << "Values: " << nums2[bruteResult2.first] << ", " << nums2[bruteResult2.second] << endl;
+    cout << "Valid: " << bruteValid2 << endl;
+
+    cout << "Hash Results: " << endl;
+    cout << "Indices: " << hashResult2.first << ", " << hashResult2.second << endl;
+    cout << "Values: " << nums2[hashResult2.first] << ", " << nums2[hashResult2.second] << endl;
+    cout << "Valid: " << hashValid2 << endl;
+
+        // Test case 3
+        
+cout << endl;
+
+cout << "Test Case 3" << endl;
+
+vector<int> nums3 = {6, 9, 7, 1, 5, 3, 4};
+int target3 = 10;
+
+pair <int, int> bruteResult3 = twoSumBruteForce(nums3, target3);
+pair <int, int> hashResult3 = twoSumHash(nums3, target3);
+
+bool bruteValid3 =
+    nums3[bruteResult3.first] + nums3[bruteResult3.second] == target3;
+
+bool hashValid3 =
+    nums3[hashResult3.first] + nums3[hashResult3.second] == target3;
+
+    cout << "Brute Force Results:" << endl;
+    cout << "Indices: " <<bruteResult3.first << ", " << bruteResult3.second << endl;
+    cout << "Values: " << nums3[bruteResult3.first] << ", " << nums3[bruteResult3.second] << endl;
+    cout << "Valid: " << bruteValid3 << endl;
+
+    cout << "Hash Results: " << endl;
+    cout << "Indices: " << hashResult3.first << ", " << hashResult3.second << endl;
+    cout << "Values: " << nums3[hashResult3.first] << ", " << nums3[hashResult3.second] << endl;
+    cout << "Valid: " << hashValid3 << endl;
+
+    // Test Case 4
+    
+    cout << endl;
+    cout << "Test Case 4" << endl;
+
+    vector<int> nums4 = {3, 2, 1, 6, 5, 9};
+    int target4 = 8;
+
+    pair<int, int> bruteResult4 = twoSumBruteForce(nums4, target4);
+    pair<int, int> hashResult4 = twoSumHash(nums4, target4);
+    
+    bool bruteValid4 =
+        nums4[bruteResult4.first] + nums4[bruteResult4.second] == target4;
+    
+    bool hashValid4 = 
+        nums4[hashResult4.first] + nums4[hashResult4.second] == target4;
+
+    cout << "Brute Force Results:" << endl;
+
+    cout << "Indices: " <<bruteResult4.first << ", " << bruteResult4.second << endl;
+    cout << "Values: " << nums4[bruteResult4.first] << ", " << nums4[bruteResult4.second] << endl;
+    cout << "Valid: " << bruteValid4 << endl;
+
+    cout << endl;
+
+    cout << "Hash Results: " << endl;
+    cout << "Indices: " << hashResult4.first << ", " << hashResult4.second << endl;
+    cout << "Values: " << nums4[hashResult4.first] << ", " << nums4[hashResult4.second] << endl;
+    cout << "Valid: " << hashValid4 << endl;
+
+    // Test case 5
+
+    cout << endl;
+    cout << "Test Case 5" << endl;
+
+    vector<int> nums5 = {-1, 0, 1, -5, 2, 3, -2, 5};
+    int target5 = -3;
+
+    pair<int, int> bruteResult5 = twoSumBruteForce(nums5, target5);
+    pair<int, int> hashResult5 = twoSumHash(nums5, target5);
+
+    bool bruteValid5 =
+        nums5[bruteResult5.first] + nums5[bruteResult5.second] == target5;
+
+    bool hashValid5 =
+        nums5[hashResult5.first] + nums5[hashResult5.second] == target5;
+
+    cout << "Brute Force Results:" << endl;
+    cout << "Indices: " << bruteResult5.first << ", " << bruteResult5.second << endl;
+    cout << "Values: " << nums5[bruteResult5.first] << ", " << nums5[bruteResult5.second] << endl;
+    cout << "Valid: " << bruteValid5 << endl;
+
+    cout << endl;
+
+    cout << "Hash Results: " << endl;
+    cout << "Indices: " << hashResult5.first << ", " << hashResult5.second << endl;
+    cout << "Values: " << nums5[hashResult5.first] << ", " << nums5[hashResult5.second] << endl;
+    cout << "Valid: " << hashValid5 << endl;
+
+    return 0;
+}
+
