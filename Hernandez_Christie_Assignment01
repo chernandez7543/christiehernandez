@@ -78,7 +78,7 @@ cout << endl;
 
 cout << "Test Case 2" << endl;
 
-vector<int> nums2 = {6, 4, 5, 2, 0, 8, 6, 16};
+vector<int> nums2 = {6, 4, 5, 2, 0, 6, 16};
 int target2 = 12;
 
 pair <int, int> bruteResult2 = twoSumBruteForce(nums2, target2);
@@ -106,7 +106,7 @@ cout << endl;
 
 cout << "Test Case 3" << endl;
 
-vector<int> nums3 = {6, 9, 7, 1, 5, 3, 4};
+vector<int> nums3 = {6, 9, 7, 2, 5, 4};
 int target3 = 10;
 
 pair <int, int> bruteResult3 = twoSumBruteForce(nums3, target3);
@@ -133,7 +133,7 @@ bool hashValid3 =
     cout << endl;
     cout << "Test Case 4" << endl;
 
-    vector<int> nums4 = {3, 2, 1, 6, 5, 9};
+    vector<int> nums4 = {3, 3, 1, 6, 5, 9};
     int target4 = 8;
 
     pair<int, int> bruteResult4 = twoSumBruteForce(nums4, target4);
@@ -163,7 +163,7 @@ bool hashValid3 =
     cout << endl;
     cout << "Test Case 5" << endl;
 
-    vector<int> nums5 = {-1, 0, 1, -5, 2, 3, -2, 5};
+    vector<int> nums5 = {-1, 0, 1, -7, 2, 3, -2, 5};
     int target5 = -3;
 
     pair<int, int> bruteResult5 = twoSumBruteForce(nums5, target5);
