@@ -1,0 +1,41 @@
+Assignment 02: Binary Search and Recursive Analysis
+
+Programming Task: Binary Search and Recursive Analysis
+Implement binary search from scratch in C++17. Your program must work on a sorted vector and return the index of the target or -1 when the target is absent.
+
+Required implementation
+Implement an iterative binary search.
+Implement a recursive binary search.
+Instrument both versions to count element comparisons.
+Test at least five searches, including: first element, last element, middle element, missing value below the range, and missing value inside the range.
+For the recursive version, write and explain the recurrence T(n) = T(n/2) + O(1) and connect it to O(log n).
+Compare binary search to a linear search on the same data.
+Restriction: do not call std::binary_search, lower_bound, or another library search routine to perform the required search.
+
+#Binary Search Assignment
+
+## Description:
+This program compares 3 search methods: Iterative Binary Search, Recursive Binary Search, and Linear Search using C++17. Each of the search methods looks for a target in the vector and returned the index
+of the value, if found. If not, returned -1. 
+
+##Approach:
+
+Used a while loop for the iterative binary search with low, high and mid values. Used an if statement for the recursive binary search. For the linear search used a for loop that starts at the beginning of the vector
+and will go through each element until target is found. If no target found at the end of the vector, returned -1. Used 5 test cases. 
+
+Resources:
+
+YouTube- https://youtu.be/OAZc1zwjERU?is=RV_ePVyT7FvsiFL0 (binary search - iterative implementation and common errors)
+
+YouTube- https://youtu.be/ZzaPdXTrSb8?is=biFNhfCl8fZ3UBsO (c++ tutorial for beginners)
+
+YouTube- https://youtu.be/yWibmhxDBHc?is=P15QG5mulot4Z2Ro (binary search implementation using c++)
+
+YouTube- https://youtu.be/Rz15vWSBuW8?is=mHqwOSuglEwg-1ey (binary search: iterative and recursive in one video) 
+
+YouTube- https://youtube.com/shorts/-NymIy5kd6o?is=B1YZ_6oQFvZXNlZZ (binary search using recursion c++) 
+
+Zybooks - Chapter 2
+
+ChatGpt - for additional explanations, troubleshoot errors, for futher understanding of assignment, and assistance when needed additional guidance
+                                                           
