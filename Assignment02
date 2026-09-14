@@ -1,0 +1,129 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+//Iterative Binary Search
+
+int binarySearchIterative(vector <int> & arr, int target, int& comparisons){
+
+
+int low = 0;
+int high = arr.size() - 1;
+
+comparisons = 0;
+
+while (low <= high){
+
+    int mid = low + (high - low) / 2;
+
+    comparisons++;
+
+    if (target == arr[mid]) 
+        return mid; // Found target, return (exit)
+
+    else if (target < arr[mid]) 
+        high = mid-1; // target lies before mid
+    else low = mid + 1; // target lies after mid
+
+}
+    return -1; //not found
+
+}
+
+//Recursive Binary Search
+int binarySearchRecursive (vector <int> & arr, int low, int high, int target, int& comparisons){
+
+    if (low > high) {
+        return -1;
+    }
+    
+    int mid = low + (high - low) / 2; 
+
+    comparisons++;
+
+    if (arr[mid] < target){
+        return binarySearchRecursive(arr, mid + 1, high, target, comparisons);
+    }
+    comparisons++;
+
+    if (arr[mid] > target) {
+        return binarySearchRecursive(arr, low, mid-1, target, comparisons);
+    }
+    
+    else {
+
+    return mid;
+    }
+    return -1;
+    
+}
+/*
+Recursive Binary Search Time Complexity:
+
+*/
+
+// Linear Search
+int linearSearch(vector<int>& arr, int target, int&comparisons){
+
+    for (int i = 0; i < arr. size(); i++){
+        comparisons++;
+
+        if (arr[i] == target){
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+int main() {
+    vector<int> arr = {2, 4, 5, 7, 8, 13, 14, 15, 23};
+    vector<int> targets = {2, 23, 8, 1, 10};
+    vector<string> labels = 
+    {
+        "First element", "last element", "middle element", 
+        "missing value below range", "missing value inside range"
+    };   
+        
+    for (int i = 0; i < targets.size(); i++){
+
+    int target = targets[i];
+
+    int comparisonsI = 0;
+    int comparisonsR = 0;
+    int comparisonsL = 0;
+
+
+    int resultI = binarySearchIterative(arr, target, comparisonsI);
+    int resultR = binarySearchRecursive(arr, 0, arr.size()-1, target, comparisonsR);
+    int resultL = linearSearch(arr, target, comparisonsL);
+    
+    
+    cout << "Test Case " << i + 1 << endl;
+    cout << labels[i] << endl;
+
+    cout << endl;
+
+    cout << "Target: " << target << endl;
+    cout << endl;
+    cout << "Iterative result found at index: " << resultI << endl;
+    cout << "Iterative element comparisons: " << comparisonsI << endl; //counts only iterative
+    cout << endl;
+
+    cout << "Recursive result found at index: " << resultR << endl;
+    cout << "Recursive element comparisons: " << comparisonsR << endl; //counts only recursive
+
+    cout << endl;
+
+    cout << "Linear search result found at index: " << resultL << endl;
+    cout << "Linear element comparisons: " << comparisonsL << endl; // counts only linear 
+    
+    cout << endl;
+    cout << endl;
+    
+    }
+    return 0;
+
+}
