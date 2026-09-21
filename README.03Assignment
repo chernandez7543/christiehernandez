@@ -1,0 +1,25 @@
+Programming Task: isSorted and Sorting Study
+Build a small C++17 sorting test bench based on the sorting work used in prior CS 210 assignments.
+Required implementation
+Implement bool isSorted(const std::vector<int>& values).
+Implement bubble sort, selection sort, insertion sort, and quicksort from scratch.
+Verify each algorithm with isSorted after sorting.
+Benchmark all four algorithms on random, already sorted, and reverse-sorted input.
+Use at least three input sizes. Choose sizes large enough to show a meaningful trend without causing unreasonable run time.
+Report a small timing table and explain the observed best, average, and worst behavior.
+Restriction: do not use std::sort to perform the required sorts. You may use it only in a separate verification step if you clearly label that use.
+
+
+Resources: 
+
+Youtube- https://youtu.be/62Ai0p1xUpE?is=4v64kBzO8eTBA-Ih (bubble sort)
+
+Youtube- https://youtu.be/Q-NXg6Tzyks?is=bzy69x6IPt4P9sX8 (selection sort)
+
+Youtube- https://youtu.be/Tz7vBodZqo8?is=ZmL7sb2H358frRWt (nsertion sort) 
+
+Youtube- https://youtu.be/vhSLT3a-t-A?is=1L6hRO457HJe6MJz (quick sort)
+
+ChatGpt: Used chatgpt as a resource to help troubleshoot errors in my code, understand the use of chrono for benchmarking
+and organizing the testing of the four sorting algorithms. Also used it to help me understand te time complexities and interpret the timing results. 
+
