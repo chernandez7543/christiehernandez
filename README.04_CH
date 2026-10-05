@@ -1,0 +1,19 @@
+Assignment 4: Linked Lists and Monopoly
+Part 1: Build Your Own Linked List
+Implement and test a linked list that supports adding, searching, removing, and printing items. Do not use std::list.
+
+Part 2: Monopoly Game
+Use your linked list to build a circular board with at least 10 properties.
+
+Each property stores its name, cost, owner, and next pointer.
+
+Players move around the board, wrapping back to the beginning.
+
+Players can buy unowned properties, but cannot buy owned properties.
+
+Simulate at least 10 turns and print the results 
+
+Resources:
+YouTube: https://youtu.be/o5wJkJJpKtM?is=9tXMC_mpQMkZnJ-Q (How to crate a linked list C++)
+YouTube: https://youtu.be/vcQIFT79_50?is=ef3BVHqxB3OLsBhd (Linked list- Implementation in C/CC+)
+ChatGpt: help understand coding a linked list, troubleshoot code, help develop the monopoly game using linked list
