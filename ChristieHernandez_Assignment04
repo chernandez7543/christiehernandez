@@ -1,0 +1,241 @@
+//Linked list
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct Node {
+    string name;
+    int cost;
+    string owner;
+    Node* next;
+};
+
+struct Player {
+    string name;
+    int money;
+    Node* position;
+};
+
+void add(Node*& first, string name, int cost) {
+    
+    Node* newNode = new Node;
+    newNode->name = name;
+    newNode->cost = cost;
+    newNode->owner = "";
+    newNode->next = nullptr;
+
+    if (first == nullptr) {
+        first = newNode;
+        return;
+    }
+    Node* current = first;
+
+    while (current->next != nullptr) {
+        current = current->next;
+    }
+    current->next = newNode;
+}
+
+void print(Node*first) {
+
+    if (first == nullptr) {
+        return;
+    }
+    Node* current = first;
+    do {
+        cout << current->name << endl; //print current
+        current = current->next; // move forward
+    }
+    while (current != first); // check if we're back at start
+       
+}
+
+bool search(Node* first, string name) {
+    
+    if (first == nullptr) {
+        return false;
+    }
+
+    Node* current = first;
+
+    do {
+        if (current->name == name) {
+            return true;
+        }
+        current = current->next;
+    } 
+    while (current != first);
+    
+    return false;
+    }
+    
+    void removeNode(Node*& first, string name) {
+        if (first == nullptr) {
+            return;
+        }
+        Node* current = first;
+        Node* previous = nullptr;
+
+        do {
+            if (current->name == name) {
+                if (current == first) {
+                    Node* last = first;
+
+                while (last->next != first) {
+                    last = last->next;
+                }
+                if (first->next == first) {
+                    delete first;
+                    first = nullptr;
+                    return;
+                }
+                first = first->next;
+                last->next = first;
+                }
+                else {
+                    previous->next = current->next;
+                }
+                delete current;
+                return;
+            }
+            previous = current;
+            current = current->next;
+        }
+        while (current != first);
+    }
+
+void makeCircular(Node* first) {
+
+    if (first == nullptr) {
+        return;
+    }
+    Node* current = first;
+
+    while (current->next != nullptr) {
+        current = current->next;
+    }
+    current->next = first;
+}
+
+void movePlayer(Player& player, int spaces){
+
+    for (int i = 0; i < spaces; i++) {
+        player.position = player.position->next;
+    }
+    cout << player.name << " moved " << spaces 
+        << " spaces to " << player.position->name << endl;
+}
+
+void buyProperty(Player& player) {
+    Node* property = player.position;
+
+    if (property->owner == "") {
+        if (player.money >= property->cost) {
+
+            property->owner = player.name;
+            player.money = player.money - property->cost;
+
+            cout << player.name << " bought "
+                << property->name << " for $"
+                << property->cost << endl;
+            cout << "Schmoney left: $"
+                << player.money << endl;
+        }
+        else {
+            cout << player.name 
+                << " does not have enough money." << endl;
+        }
+    }
+    else {
+        cout << property->name
+            << " is already owned by "
+            << property->owner << endl;
+    }
+}
+void printResults(Node* first) {
+    
+    if (first == nullptr) {
+        return;
+    }
+    Node* current = first;
+
+    cout <<"\n--- FINAL PROPERTY RESULTS ---" << endl;
+
+    do {
+        cout << current->name
+            << " | Cost: $" << current->cost
+            << " | Owner: ";
+        if (current->owner == "") {
+            cout << "Unowned";
+        }
+        else {
+            cout << current-> owner;
+        }
+
+        cout << endl;
+
+        current = current->next;
+    }
+    while (current != first);
+}
+
+int main() {
+    Node* first = nullptr;
+
+    add(first, "The Boardwalk", 400);
+    add(first, "Melon Place", 350);
+    add(first, "SDFC Avenue", 80);
+    add(first, "Sonic Lane", 200);
+    add(first, "Mario Way", 100);
+    add(first, "Peach Mansion", 140);
+    add(first, "Mango Tango Way", 60);
+    add(first, "Stormy Castle", 250);
+    add(first, "Three-Story Place", 380);
+    add(first, "Sunshine Lane", 150);
+    makeCircular(first);
+    print(first);
+    
+    Player player1;
+
+    player1.name = "Player #1";
+    player1.money = 1500;
+    player1.position = first;
+
+    Player player2;
+
+    player2.name = "Player #2";
+    player2.money = 1500;
+    player2.position = first;
+
+    cout << endl;
+    cout << player1.name << " starts at "
+        << player1.position->name << endl;
+
+    cout << "Schmoney: $" << player1.money << endl;
+
+    cout << player2.name << " starts at "
+        << player2.position->name << endl;
+    cout << "Schmoney: $" << player2.money << endl;
+
+    cout << "\n--- GAME START ---" << endl;
+
+    for (int turn = 1; turn <= 10; turn++) {
+        cout << "\nTurn " << turn << endl;
+
+        int spaces = (turn % 6) + 1;
+            if (turn % 2 == 1) {
+                movePlayer(player1, spaces);
+                buyProperty(player1);
+            }
+            else {
+                movePlayer(player2, spaces);
+                buyProperty(player2);
+            }
+    }
+    printResults(first);
+   
+    return 0;
+}
+
+
