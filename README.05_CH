@@ -1,0 +1,13 @@
+Assignment05
+Six implementations using arrays or our own linked lists
+ PURPOSE:
+1. Create a stack, queue, and deque with fixed-size arrays.
+2. Create the same three structures using our own linked-list nodes.
+3. Show at least 10 insertion/removal attempts per structure.
+4. Test empty handling and test full handling for the arrays.
+5. Explain the time complexity for the operations.
+RESTRICTION: No <stack>, <queue>, <deque>, or other prebuilt ADT containers.
+
+Resources:
+- Chat GPT assistance for code and explanations. 
+- YouTube: https://youtu.be/zYhHN4bv21w?is=iUTLKiNEq25ihJYy (C++ Data Structures: Stacks, Queues, Deques)
