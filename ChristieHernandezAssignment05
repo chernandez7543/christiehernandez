@@ -1,0 +1,580 @@
+
+// Six implementations using arrays or our own linked lists
+// PURPOSE:
+// 1. Create a stack, queue, and deque with fixed-size arrays.
+// 2. Create the same three structures using our own linked-list nodes.
+// 3. Show at least 10 insertion/removal attempts per structure.
+// 4. Test empty handling and test full handling for the arrays.
+// 5. Explain the time complexity for the operations.
+// RESTRICTION: No <stack>, <queue>, <deque>, or other prebuilt ADT containers.
+
+
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+// The array implementations use a fixed capacity to keep the examples simple.
+const int CAPACITY = 5;
+
+// ---------------------------------------------------------------
+// 1. ARRAY-BASED STACK: LIFO = Last In, First Out
+// ---------------------------------------------------------------
+class ArrayStack {
+private:
+    int items[CAPACITY];
+    int topIndex;  // -1 means there are no elements.
+
+public:
+    ArrayStack() : topIndex(-1) {}
+
+    bool isEmpty() const { return topIndex == -1; }
+    bool isFull() const { return topIndex == CAPACITY - 1; }
+
+    bool push(int value) {
+        if (isFull()) return false;     // Prevent writing past the array.
+        items[++topIndex] = value;       // Move top up, then save value.
+        return true;
+    }
+
+    bool pop(int& removed) {
+        if (isEmpty()) return false;    // Cannot remove from an empty stack.
+        removed = items[topIndex--];    // Read top, then move down.
+        return true;
+    }
+
+    bool peek(int& value) const {
+        if (isEmpty()) return false;
+        value = items[topIndex];
+        return true;
+    }
+
+    void print() const {
+        cout << "  Stack bottom -> top: ";
+        if (isEmpty()) cout << "(empty)";
+        for (int i = 0; i <= topIndex; ++i) cout << items[i] << ' ';
+        cout << '\n';
+    }
+};
+
+// 2. LINKED-LIST STACK: each new node becomes the head/top.
+class LinkedStack {
+private:
+    struct Node {
+        int value;
+        Node* next;
+        Node(int v, Node* n = nullptr) : value(v), next(n) {}
+    };
+    Node* topNode;
+
+public:
+    LinkedStack() : topNode(nullptr) {}
+    LinkedStack(const LinkedStack&) = delete;            // Avoid shallow copies.
+    LinkedStack& operator=(const LinkedStack&) = delete;
+
+    ~LinkedStack() {
+        int ignored;
+        while (pop(ignored)) {}  // Free every dynamically allocated node.
+    }
+
+    bool isEmpty() const { return topNode == nullptr; }
+
+    bool push(int value) {
+        topNode = new Node(value, topNode);  // New node links to previous top.
+        return true;
+    }
+
+    bool pop(int& removed) {
+        if (isEmpty()) return false;
+        Node* oldTop = topNode;
+        removed = oldTop->value;
+        topNode = oldTop->next;  // Second node becomes the new top.
+        delete oldTop;          // Avoid a memory leak.
+        return true;
+    }
+
+    bool peek(int& value) const {
+        if (isEmpty()) return false;
+        value = topNode->value;
+        return true;
+    }
+
+    void print() const {
+        cout << "  Stack top -> bottom: ";
+        if (isEmpty()) cout << "(empty)";
+        for (Node* current = topNode; current; current = current->next)
+            cout << current->value << ' ';
+        cout << '\n';
+    }
+};
+
+// 3. ARRAY-BASED QUEUE: FIFO = First In, First Out
+// A circular array avoids shifting items whenever we dequeue.
+class ArrayQueue {
+private:
+    int items[CAPACITY];
+    int frontIndex;  // Position of the oldest element.
+    int count;       // Number of elements currently stored.
+
+public:
+    ArrayQueue() : frontIndex(0), count(0) {}
+
+    bool isEmpty() const { return count == 0; }
+    bool isFull() const { return count == CAPACITY; }
+
+    bool enqueue(int value) {
+        if (isFull()) return false;
+        // Modulo (%) wraps an index back to 0 after the last array slot.
+        int rearIndex = (frontIndex + count) % CAPACITY;
+        items[rearIndex] = value;
+        ++count;
+        return true;
+    }
+
+    bool dequeue(int& removed) {
+        if (isEmpty()) return false;
+        removed = items[frontIndex];
+        frontIndex = (frontIndex + 1) % CAPACITY;
+        --count;
+        return true;
+    }
+
+    bool peek(int& value) const {
+        if (isEmpty()) return false;
+        value = items[frontIndex];
+        return true;
+    }
+
+    void print() const {
+        cout << "  Queue front -> rear: ";
+        if (isEmpty()) cout << "(empty)";
+        for (int i = 0; i < count; ++i)
+            cout << items[(frontIndex + i) % CAPACITY] << ' ';
+        cout << '\n';
+    }
+};
+
+// 4. LINKED-LIST QUEUE: head is front; tail is rear.
+// Keeping a tail pointer makes enqueue O(1), not O(n).
+
+class LinkedQueue {
+private:
+    struct Node {
+        int value;
+        Node* next;
+        explicit Node(int v) : value(v), next(nullptr) {}
+    };
+    Node* head;
+    Node* tail;
+
+public:
+    LinkedQueue() : head(nullptr), tail(nullptr) {}
+    LinkedQueue(const LinkedQueue&) = delete;
+    LinkedQueue& operator=(const LinkedQueue&) = delete;
+
+    ~LinkedQueue() {
+        int ignored;
+        while (dequeue(ignored)) {}  // Delete all remaining nodes.
+    }
+
+    bool isEmpty() const { 
+return head == nullptr;
+ }
+
+    bool enqueue(int value) {
+        Node* newNode = new Node(value);
+        if (isEmpty()) {
+            head = tail = newNode;      // First node is both front and rear.
+        } else {
+            tail->next = newNode;       // Attach after old rear.
+            tail = newNode;             // Update rear pointer.
+        }
+        return true;
+    }
+
+    bool dequeue(int& removed) {
+        if (isEmpty()) return false;
+        Node* oldHead = head;
+        removed = oldHead->value;
+        head = head->next;
+        if (head == nullptr) tail = nullptr;  // Last element was removed.
+        delete oldHead;
+        return true;
+    }
+
+    bool peek(int& value) const {
+        if (isEmpty()) return false;
+        value = head->value;
+        return true;
+    }
+
+    void print() const {
+        cout << "  Queue front -> rear: ";
+        if (isEmpty()) cout << "(empty)";
+        for (Node* current = head; current; current = current->next)
+            cout << current->value << ' ';
+        cout << '\n';
+    }
+};
+
+// 5. ARRAY-BASED DEQUE: Double-Ended QUEue
+// Circular positions let us add/remove at BOTH ends in O(1).
+
+class ArrayDeque {
+private:
+    int items[CAPACITY];
+    int frontIndex;
+    int count;
+
+public:
+    ArrayDeque() : frontIndex(0), count(0) {}
+
+    bool isEmpty() const { return count == 0; }
+    bool isFull() const { return count == CAPACITY; }
+
+    bool pushFront(int value) {
+        if (isFull()) return false;
+        frontIndex = (frontIndex - 1 + CAPACITY) % CAPACITY;
+        items[frontIndex] = value;
+        ++count;
+        return true;
+    }
+
+    bool pushBack(int value) {
+        if (isFull()) return false;
+        int backInsertIndex = (frontIndex + count) % CAPACITY;
+        items[backInsertIndex] = value;
+        ++count;
+        return true;
+    }
+
+    bool popFront(int& removed) {
+        if (isEmpty()) return false;
+        removed = items[frontIndex];
+        frontIndex = (frontIndex + 1) % CAPACITY;
+        --count;
+        return true;
+    }
+
+    bool popBack(int& removed) {
+        if (isEmpty()) return false;
+        int backIndex = (frontIndex + count - 1) % CAPACITY;
+        removed = items[backIndex];
+        --count;
+        return true;
+    }
+
+    bool peekFront(int& value) const {
+        if (isEmpty()) return false;
+        value = items[frontIndex];
+        return true;
+    }
+
+    bool peekBack(int& value) const {
+        if (isEmpty()) return false;
+        value = items[(frontIndex + count - 1) % CAPACITY];
+        return true;
+    }
+
+    void print() const {
+        cout << "  Deque front -> back: ";
+        if (isEmpty()) cout << "(empty)";
+        for (int i = 0; i < count; ++i)
+            cout << items[(frontIndex + i) % CAPACITY] << ' ';
+        cout << '\n';
+    }
+};
+
+// 6. LINKED-LIST DEQUE: a DOUBLY linked list.
+// 'prev' allows removal from the back without traversing the list.
+class LinkedDeque {
+private:
+    struct Node {
+        int value;
+        Node* prev;
+        Node* next;
+        explicit Node(int v) : value(v), prev(nullptr), next(nullptr) {}
+    };
+    Node* head;
+    Node* tail;
+
+
+public:
+    LinkedDeque() : head(nullptr), tail(nullptr) {}
+    LinkedDeque(const LinkedDeque&) = delete;
+    LinkedDeque& operator=(const LinkedDeque&) = delete;
+
+    ~LinkedDeque() {
+        int ignored;
+        while (popFront(ignored)) {}  // Free allocated memory.
+    }
+
+    bool isEmpty() const { return head == nullptr; }
+
+    bool pushFront(int value) {
+        Node* newNode = new Node(value);
+        newNode->next = head;
+        if (isEmpty()) tail = newNode;
+        else head->prev = newNode;
+        head = newNode;
+        return true;
+    }
+
+    bool pushBack(int value) {
+        Node* newNode = new Node(value);
+        newNode->prev = tail;
+        if (isEmpty()) head = newNode;
+        else tail->next = newNode;
+        tail = newNode;
+        return true;
+    }
+
+    bool popFront(int& removed) {
+        if (isEmpty()) return false;
+        Node* oldHead = head;
+        removed = oldHead->value;
+        head = head->next;
+        if (head == nullptr) tail = nullptr;
+        else head->prev = nullptr;
+        delete oldHead;
+        return true;
+    }
+
+    bool popBack(int& removed) {
+        if (isEmpty()) return false;
+        Node* oldTail = tail;
+        removed = oldTail->value;
+        tail = tail->prev;
+        if (tail == nullptr) head = nullptr;
+        else tail->next = nullptr;
+        delete oldTail;
+        return true;
+    }
+
+    bool peekFront(int& value) const {
+        if (isEmpty()) return false;
+        value = head->value;
+        return true;
+    }
+
+    bool peekBack(int& value) const {
+        if (isEmpty()) return false;
+        value = tail->value;
+        return true;
+    }
+
+    void print() const {
+        cout << "  Deque front -> back: ";
+        if (isEmpty()) cout << "(empty)";
+        for (Node* current = head; current; current = current->next)
+            cout << current->value << ' ';
+        cout << '\n';
+    }
+};
+
+// TEST HELPERS: each CHECK compares actual behavior to be expected.
+// False checks are printed as FAIL, making errors easy to locate.
+int passed = 0;
+int failed = 0;
+
+void check(bool condition, const string& description) {
+    if (condition) {
+        ++passed;
+        cout << "  [PASS] " << description << '\n';
+    } else {
+        ++failed;
+        cout << "  [FAIL] " << description << '\n';
+    }
+}
+
+void heading(const string& name) {
+    cout << "\n========== " << name << " ==========\n";
+}
+
+// The labels below number insertion/removal attempts, not just peeks.
+// Each demo contains at least 10 insertion/removal operations.
+void testArrayStack() {
+    heading("1. Array Stack (LIFO)");
+    ArrayStack s;
+    int x = -1;
+    check(s.isEmpty(), "Initially empty");
+    check(s.push(10), "01 push 10");
+    check(s.push(20), "02 push 20");
+    check(s.push(30), "03 push 30");
+    check(s.push(40), "04 push 40");
+    check(s.push(50), "05 push 50");
+    s.print();
+    check(!s.push(60), "06 push 60 rejected (array is full)");
+    check(s.peek(x) && x == 50, "Peek shows top = 50");
+    check(s.pop(x) && x == 50, "07 pop -> 50");
+    check(s.pop(x) && x == 40, "08 pop -> 40");
+    check(s.push(60), "09 push 60 after freeing space");
+    s.print();
+    check(s.pop(x) && x == 60, "10 pop -> 60");
+    check(s.pop(x) && x == 30, "11 pop -> 30");
+    check(s.pop(x) && x == 20, "12 pop -> 20");
+    check(s.pop(x) && x == 10, "13 pop -> 10");
+    check(!s.pop(x), "14 pop rejected (empty stack)");
+    check(s.isEmpty(), "Ends empty");
+    s.print();
+}
+
+void testLinkedStack() {
+    heading("2. Linked Stack (LIFO)");
+    LinkedStack s;
+    int x = -1;
+    check(s.isEmpty(), "Initially empty");
+    check(s.push(10), "01 push 10");
+    check(s.push(20), "02 push 20");
+    check(s.push(30), "03 push 30");
+    check(s.push(40), "04 push 40");
+    check(s.push(50), "05 push 50");
+    check(s.push(60), "06 push 60 (linked list can grow)");
+    s.print();
+    check(s.peek(x) && x == 60, "Peek shows top = 60");
+    check(s.pop(x) && x == 60, "07 pop -> 60");
+    check(s.pop(x) && x == 50, "08 pop -> 50");
+    check(s.pop(x) && x == 40, "09 pop -> 40");
+    check(s.pop(x) && x == 30, "10 pop -> 30");
+    check(s.pop(x) && x == 20, "11 pop -> 20");
+    check(s.pop(x) && x == 10, "12 pop -> 10");
+    check(!s.pop(x), "13 pop rejected (empty stack)");
+    check(s.isEmpty(), "Ends empty");
+    s.print();
+}
+
+void testArrayQueue() {
+    heading("3. Array Queue (FIFO, circular)");
+    ArrayQueue q;
+    int x = -1;
+    check(q.isEmpty(), "Initially empty");
+    check(q.enqueue(10), "01 enqueue 10");
+    check(q.enqueue(20), "02 enqueue 20");
+    check(q.enqueue(30), "03 enqueue 30");
+    check(q.enqueue(40), "04 enqueue 40");
+    check(q.enqueue(50), "05 enqueue 50");
+    q.print();
+    check(!q.enqueue(60), "06 enqueue 60 rejected (array is full)");
+    check(q.peek(x) && x == 10, "Peek shows front = 10");
+    check(q.dequeue(x) && x == 10, "07 dequeue -> 10");
+    check(q.dequeue(x) && x == 20, "08 dequeue -> 20");
+    check(q.enqueue(60), "09 enqueue 60 (wrap-around)");
+    check(q.enqueue(70), "10 enqueue 70 (wrap-around)");
+    q.print();
+    check(q.dequeue(x) && x == 30, "11 dequeue -> 30");
+    check(q.dequeue(x) && x == 40, "12 dequeue -> 40");
+    check(q.dequeue(x) && x == 50, "13 dequeue -> 50");
+    check(q.dequeue(x) && x == 60, "14 dequeue -> 60");
+    check(q.dequeue(x) && x == 70, "15 dequeue -> 70");
+    check(!q.dequeue(x), "16 dequeue rejected (empty queue)");
+    check(q.isEmpty(), "Ends empty");
+    q.print();
+}
+
+void testLinkedQueue() {
+    heading("4. Linked Queue (FIFO)");
+    LinkedQueue q;
+    int x = -1;
+    check(q.isEmpty(), "Initially empty");
+    check(q.enqueue(10), "01 enqueue 10");
+    check(q.enqueue(20), "02 enqueue 20");
+    check(q.enqueue(30), "03 enqueue 30");
+    check(q.enqueue(40), "04 enqueue 40");
+    check(q.enqueue(50), "05 enqueue 50");
+    check(q.enqueue(60), "06 enqueue 60");
+    q.print();
+    check(q.peek(x) && x == 10, "Peek shows front = 10");
+    check(q.dequeue(x) && x == 10, "07 dequeue -> 10");
+    check(q.dequeue(x) && x == 20, "08 dequeue -> 20");
+    check(q.enqueue(70), "09 enqueue 70");
+    check(q.enqueue(80), "10 enqueue 80");
+    q.print();
+    check(q.dequeue(x) && x == 30, "11 dequeue -> 30");
+    check(q.dequeue(x) && x == 40, "12 dequeue -> 40");
+    check(q.dequeue(x) && x == 50, "13 dequeue -> 50");
+    check(q.dequeue(x) && x == 60, "14 dequeue -> 60");
+    check(q.dequeue(x) && x == 70, "15 dequeue -> 70");
+    check(q.dequeue(x) && x == 80, "16 dequeue -> 80");
+    check(!q.dequeue(x), "17 dequeue rejected (empty queue)");
+    check(q.isEmpty(), "Ends empty (head and tail are null)");
+    q.print();
+}
+
+void testArrayDeque() {
+    heading("5. Array Deque (both ends, circular)");
+    ArrayDeque d;
+    int x = -1;
+    check(d.isEmpty(), "Initially empty");
+    check(d.pushBack(10), "01 pushBack 10");          // [10]
+    check(d.pushFront(5), "02 pushFront 5");          // [5,10]
+    check(d.pushBack(20), "03 pushBack 20");          // [5,10,20]
+    check(d.pushFront(1), "04 pushFront 1");          // [1,5,10,20]
+    check(d.pushBack(30), "05 pushBack 30");          // [1,5,10,20,30]
+    d.print();
+    check(!d.pushFront(0), "06 pushFront rejected (array full)");
+    check(d.peekFront(x) && x == 1, "Peek front = 1");
+    check(d.peekBack(x) && x == 30, "Peek back = 30");
+    check(d.popFront(x) && x == 1, "07 popFront -> 1"); // [5,10,20,30]
+    check(d.popBack(x) && x == 30, "08 popBack -> 30");// [5,10,20]
+    check(d.pushFront(3), "09 pushFront 3");         // [3,5,10,20]
+    check(d.pushBack(40), "10 pushBack 40");         // [3,5,10,20,40]
+    d.print();
+    check(d.popFront(x) && x == 3, "11 popFront -> 3");
+    check(d.popFront(x) && x == 5, "12 popFront -> 5");
+    check(d.popBack(x) && x == 40, "13 popBack -> 40");
+    check(d.popFront(x) && x == 10, "14 popFront -> 10");
+    check(d.popBack(x) && x == 20, "15 popBack -> 20");
+    check(!d.popBack(x), "16 popBack rejected (empty deque)");
+    check(d.isEmpty(), "Ends empty");
+    d.print();
+}
+
+void testLinkedDeque() {
+    heading("6. Linked Deque (doubly linked)");
+    LinkedDeque d;
+    int x = -1;
+    check(d.isEmpty(), "Initially empty");
+    check(d.pushBack(10), "01 pushBack 10");         // [10]
+    check(d.pushFront(5), "02 pushFront 5");         // [5,10]
+    check(d.pushBack(20), "03 pushBack 20");         // [5,10,20]
+    check(d.pushFront(1), "04 pushFront 1");         // [1,5,10,20]
+    check(d.pushBack(30), "05 pushBack 30");         // [1,5,10,20,30]
+    check(d.pushFront(0), "06 pushFront 0");         // [0,1,5,10,20,30]
+    d.print();
+    check(d.peekFront(x) && x == 0, "Peek front = 0");
+    check(d.peekBack(x) && x == 30, "Peek back = 30");
+    check(d.popFront(x) && x == 0, "07 popFront -> 0");
+    check(d.popBack(x) && x == 30, "08 popBack -> 30");
+    check(d.pushFront(3), "09 pushFront 3");         // [3,1,5,10,20]
+    check(d.pushBack(40), "10 pushBack 40");         // [3,1,5,10,20,40]
+    d.print();
+    check(d.popFront(x) && x == 3, "11 popFront -> 3");
+    check(d.popBack(x) && x == 40, "12 popBack -> 40");
+    check(d.popFront(x) && x == 1, "13 popFront -> 1");
+    check(d.popBack(x) && x == 20, "14 popBack -> 20");
+    check(d.popFront(x) && x == 5, "15 popFront -> 5");
+    check(d.popBack(x) && x == 10, "16 popBack -> 10");
+    check(!d.popFront(x), "17 popFront rejected (empty deque)");
+    check(d.isEmpty(), "Ends empty (head and tail are null)");
+    d.print();
+
+}
+int main() {
+    
+    cout << "Array capacity = " << CAPACITY << "\n";
+    cout << "Every numbered line is an insertion or removal attempt.\n";
+
+    testArrayStack();
+    testLinkedStack();
+    testArrayQueue();
+    testLinkedQueue();
+    testArrayDeque();
+    testLinkedDeque();
+
+    cout << "\n========== TEST SUMMARY ==========\n";
+    cout << "Passed: " << passed << "\nFailed: " << failed << '\n';
+   
+    
+    return (failed == 0) ? 0 : 1;
+}
+
