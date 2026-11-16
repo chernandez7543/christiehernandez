@@ -1,0 +1,15 @@
+Assignment 07: Binary Search Tree Operations
+Programming Task: Binary Search Tree Operations
+Implement a binary search tree in C++17 from scratch.
+
+Required implementation
+Create a node type and a BinarySearchTree class.
+Implement insertion, search, removal, inorder traversal, preorder traversal, postorder traversal, and height.
+Insert at least 10 distinct integers.
+Demonstrate searching for one present key and one absent key.
+Demonstrate all three removal cases: leaf, one child, and two children.
+Show that inorder traversal remains sorted after each removal.
+Explain average and worst-case complexity for search, insert, and remove.
+Restriction: do not use std::set, std::map, or another tree container as the implementation.
+
+Resources: ChatGPT and Zybooks
