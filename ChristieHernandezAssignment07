@@ -1,0 +1,191 @@
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class BinarySearchTree {
+    private:
+    struct Node {
+        int key;
+        Node* left = nullptr;
+        Node* right = nullptr;
+        };
+        Node* root = nullptr;
+
+        static Node* insertNode (Node* node, int key)
+        {
+            if (node == nullptr) {
+                return new Node{key};
+            }
+            if (key < node->key) {
+                node->left = insertNode(node->left, key);
+            } 
+            else if (key > node->key) {
+                node->right = insertNode (node->right, key); //an equal key is already in the tree
+            }
+            return node;
+        }
+            //return the updated root of this subtree so its parent can reconnect it
+            static Node* removeNode(Node* node, int key)
+            {
+                if (node == nullptr) {
+                    return nullptr;
+                }
+                if (key < node->key) {
+                    node->left = removeNode(node->left, key);
+                    return node;
+                }
+                if (key > node->key) {
+                    node->right = removeNode(node->right, key);
+                    return node;
+                }
+                if (node->left == nullptr) { //for a leaf this is nullptr, otherwise the right child takes its place
+                    Node* replacement = node->right;
+                    delete node;
+                    return replacement;
+                }
+                if (node->right == nullptr) {
+                    Node* replacement = node->left;
+                    delete node;
+                    return replacement;
+                }
+                //the leftmost node in the right subtree is the next larger key
+                const Node* successor = node->right;
+                while (successor->left != nullptr) {
+                    successor = successor->left;
+                }
+                node->key = successor->key;
+                node->right = removeNode(node->right, node->key);
+                return node;
+            }
+            static void collectInorder(const Node* node, std::vector<int>& keys) 
+            {
+                if (node == nullptr) {
+                    return;
+                }
+                collectInorder(node->left, keys);
+                keys.push_back(node->key);
+                collectInorder(node->right, keys);
+            }
+            static void collectPreorder(const Node* node, std::vector<int>& keys)
+            {
+                if (node == nullptr) {
+                    return;
+                }
+                keys.push_back(node->key);
+                collectPreorder(node->left, keys);
+                collectPreorder(node->right, keys);
+            }
+            static void collectPostorder(const Node* node, std::vector<int>&keys) {
+                if (node == nullptr) {
+                    return;
+                }
+                collectPostorder(node->left, keys);
+                collectPostorder(node->right, keys);
+                keys.push_back(node->key);
+            }
+            
+        static int heightOf(const Node* node) {
+            if (node == nullptr) {
+                return -1;
+            }
+            return 1 + std::max(heightOf(node->left), heightOf(node->right));
+        }
+        static void clear(Node* node) {
+            if (node == nullptr) {
+                return;
+            }
+            clear(node->left);
+            clear(node->right);
+            delete node;
+        }
+        
+    public:
+        BinarySearchTree() = default;
+        BinarySearchTree(const BinarySearchTree&) = delete;
+        BinarySearchTree& operator = (const BinarySearchTree&) = delete;
+
+            ~BinarySearchTree() {
+                clear(root);
+            }
+            //search, insert, and remove take O(log n) on average for a randomly built
+            //tree an O(n) in the worst case if the tree forms a single chain
+            void insertion(int key) {
+                root = insertNode(root, key);
+            }
+            bool search(int key) const {
+                const Node* node = root;
+                while (node != nullptr) {
+                    if (key == node->key) {
+                        return true;
+                    }
+                    if (key < node->key) {
+                        node = node->left;
+                    } else {
+                        node = node->right;
+                    }
+                }
+                return false;
+            }
+            void remove(int key) {
+                root = removeNode(root, key);
+            }
+            std::vector<int> inorder() const{
+                std::vector<int> keys;
+                collectInorder(root, keys);
+                return keys;
+            }
+            std::vector<int> preorder() const { 
+                std::vector<int> keys;
+                collectPreorder(root, keys);
+                return keys;
+            }
+            std::vector<int> postorder() const {
+                std::vector<int> keys;
+                collectPostorder(root, keys);
+                return keys;
+            }
+            //height counts edges from the root to the deepest leaf, a leaf has height 0
+            int height() const {
+                return heightOf(root);
+            }
+};
+
+void printKeys(const char* label, const std::vector<int>&keys) {
+    std::cout << label;
+    for (int key : keys) {
+        std::cout << ' ' << key;
+    }
+    std::cout << '\n';
+}
+void showRemoval(BinarySearchTree& tree, int key, const char* removalCase) {
+    std::cout <<"\nRemove " << key << " (" << removalCase << ")\n";
+    tree.remove(key);
+
+    const auto keys = tree.inorder();
+    printKeys("Inorder:", keys);
+    std::cout << "Sorted: " << (std::is_sorted(keys.begin(), keys.end()) ? "yes" : "no") 
+        << '\n';
+}
+
+int main() {
+    BinarySearchTree tree;
+    const int keys[] = {50, 30, 70, 20, 40, 60, 80, 10, 35, 65};
+    for (int key : keys) {
+        tree.insertion(key);
+    }
+    printKeys("Inorder:", tree.inorder());
+    printKeys("Preorder:", tree.preorder());
+    printKeys("Postorder:", tree.postorder());
+    std::cout << "Height in edges: " << tree.height() << '\n';
+
+    std::cout << "\nSearch for 65: " << (tree.search(65) ? "found" : "not found") << '\n';
+    std::cout << "Search for 55: " << (tree.search(55) ? "found" : "not found") << '\n';
+
+    showRemoval(tree, 10, "leaf");
+    showRemoval(tree, 40, "one child");
+    showRemoval(tree, 50, "two children");
+
+    return 0;
+}
